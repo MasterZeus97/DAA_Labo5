@@ -51,9 +51,7 @@ class ContactsViewModel(application: ContactsApplication) : AndroidViewModel(app
      * Récupère un utilisateur
      */
     fun get(id: Long) {
-        viewModelScope.launch {
-            _contact.postValue(repository.get(id))
-        }
+        _contact.postValue(repository.get(id))
     }
 
     /**
