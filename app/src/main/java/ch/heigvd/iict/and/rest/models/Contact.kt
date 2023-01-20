@@ -20,6 +20,6 @@ data class Contact(@PrimaryKey(autoGenerate = true) var id: Long? = null,
     override fun toString(): String {
         return  "Contact(id: $id, name: $name, firstname: $firstname, " +
                 "birthday: $birthday, email :$email, address: $address, zip: $zip, city: $city, " +
-                "type: $type, phoneNumber: $phoneNumber)"
+                "type: $type, phoneNumber: $phoneNumber, state: $state)"
     }
 }
