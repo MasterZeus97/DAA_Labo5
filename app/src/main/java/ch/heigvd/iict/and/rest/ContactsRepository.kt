@@ -65,19 +65,17 @@ class ContactsRepository(private val dao: ContactsDao, private val prefs: Shared
         when (contact.state) {
             SyncState.OK -> return
             SyncState.UPDATED -> {
-                sendObj("/contacts/${contact.id!!}", true, "PUT", contact)
+                sendObj("/contacts/${contact.remote_id!!}", true, "PUT", contact)
                 dao.changeState(contact.id!!, SyncState.OK)
             }
             SyncState.NEW -> {
-                val oldId = contact.id!!
-                contact.id = null
-                val newId = sendObj("/contacts/", true, "POST", contact).toLong()
-                dao.updateId(oldId, newId)
-                contact.id = newId
-                dao.changeState(contact.id!!, SyncState.OK)
+                if (contact.remote_id != null) throw Exception("Shouldn't have a remote id")
+                contact.remote_id = sendObj("/contacts/", true, "POST", contact).toLong()
+                contact.state = SyncState.OK
+                dao.update(contact)
             }
             SyncState.DELETED -> {
-                req("/contacts/${contact.id!!}", true, "DELETE")
+                req("/contacts/${contact.remote_id!!}", true, "DELETE")
                 dao.delete(contact.id!!)
             }
         }

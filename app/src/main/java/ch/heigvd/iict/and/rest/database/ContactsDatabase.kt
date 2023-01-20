@@ -63,7 +63,8 @@ abstract class ContactsDatabase : RoomDatabase() {
                             address = "Route de Cheseaux 1",
                             zip = "1400", city = "Yverdon-les-Bains",
                             type = PhoneType.OFFICE, phoneNumber = "024 111 22 33",
-                            state = SyncState.NEW
+                            state = SyncState.NEW,
+                            remote_id = null
                         )
 
                         val c2 =  Contact(  id = null,
@@ -82,7 +83,8 @@ abstract class ContactsDatabase : RoomDatabase() {
                             address = "Avenue des Sports 20",
                             zip = "1400", city = "Yverdon-les-Bains",
                             type = PhoneType.MOBILE, phoneNumber = "079 111 22 33",
-                            state = SyncState.NEW
+                            state = SyncState.NEW,
+                            remote_id = null
                         )
 
                         database.contactsDao().insert(c1)

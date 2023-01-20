@@ -18,9 +18,6 @@ interface ContactsDao {
     @Update
     fun update(contact: Contact)
 
-    @Query("UPDATE Contact SET id = :new_id WHERE id = :old_id")
-    fun updateId(old_id: Long, new_id: Long)
-
     @Delete
     fun delete(contact: Contact)
 
