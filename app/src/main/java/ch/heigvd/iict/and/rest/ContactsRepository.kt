@@ -1,5 +1,7 @@
 package ch.heigvd.iict.and.rest
 
+import android.content.SharedPreferences
+import androidx.core.content.edit
 import ch.heigvd.iict.and.rest.database.ContactsDao
 import ch.heigvd.iict.and.rest.models.Contact
 import ch.heigvd.iict.and.rest.models.SyncState
@@ -9,14 +11,13 @@ import kotlinx.coroutines.withContext
 import java.net.HttpURLConnection
 import java.net.URL
 
-class ContactsRepository(private val dao: ContactsDao) {
+class ContactsRepository(private val dao: ContactsDao, private val prefs: SharedPreferences) {
     val allContacts = dao.getAllContactsLiveData()
 
     private var uuid: String? = null
     private val url: String = "https://daa.icct.ch/"
 
     private suspend fun req(endpoint: String, needConnection: Boolean, method: String = "GET"): String {
-        uuid ?: getUuid()
         val url = URL(this.url + endpoint)
         val connection = withContext(Dispatchers.IO) {
             url.openConnection()
@@ -25,6 +26,7 @@ class ContactsRepository(private val dao: ContactsDao) {
         connection.setRequestProperty("Accept", "application/json")
 
         if (needConnection) {
+            uuid ?: getUuid()
             connection.setRequestProperty("X-UUID", uuid!!)
         }
 
@@ -37,7 +39,6 @@ class ContactsRepository(private val dao: ContactsDao) {
     }
 
     private suspend fun <T> sendObj(endpoint: String, needConnection: Boolean, method: String, obj: T): String {
-        uuid ?: getUuid()
         val url = URL(url + endpoint)
         val json = Gson().toJson(obj)
 
@@ -48,6 +49,7 @@ class ContactsRepository(private val dao: ContactsDao) {
         connection.doOutput = true
         connection.setRequestProperty("Content-Type", "application/json")
         if (needConnection) {
+            uuid ?: getUuid()
             connection.setRequestProperty("X-UUID", uuid!!)
         }
         connection.outputStream.bufferedWriter(Charsets.UTF_8).use {
@@ -82,7 +84,13 @@ class ContactsRepository(private val dao: ContactsDao) {
     }
 
     private suspend fun getUuid() {
-        uuid = req("/enroll", false, "GET")
+        uuid = prefs.getString("uuid", null)
+        if (uuid == null) {
+            uuid = req("/enroll", false, "GET")
+            prefs.edit {
+                putString("uuid", uuid!!)
+            }
+        }
     }
 
     fun enroll() {
