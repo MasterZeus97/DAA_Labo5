@@ -42,10 +42,10 @@ class ContactsRepository(private val dao: ContactsDao, private val prefs: Shared
         cont.resume(connection.inputStream.bufferedReader(Charsets.UTF_8).readText())
     }
 
-    /*private suspend fun <T> reqObj(endpoint: String, needConnection: Boolean, dto: T): T {
+    private suspend inline fun <reified T> reqObj(endpoint: String, needConnection: Boolean): T {
         val json = req(endpoint, needConnection)
-        return Gson().fromJson(json, dto!!::class.java)
-    }*/
+        return Gson().fromJson(json, T::class.java)
+    }
 
     private suspend fun <T> sendObj(endpoint: String, needConnection: Boolean, method: String, obj: T) = suspendCoroutine { cont ->
         if (!hasInternet()) {
@@ -100,7 +100,7 @@ class ContactsRepository(private val dao: ContactsDao, private val prefs: Shared
         val uuid = prefs.getString("uuid", null)
         return if (uuid != null) {
             this.uuid = uuid
-            // TODO : Load all contacts from remote
+            dao.insert(reqObj<List<Contact>>("/contacts", true))
             false
         } else {
             val newUuid = req("/enroll", false, "GET")

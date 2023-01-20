@@ -15,6 +15,9 @@ interface ContactsDao {
     @Insert
     fun insert(contact: Contact) : Long
 
+    @Insert
+    fun insert(contacts: List<Contact>)
+
     @Update
     fun update(contact: Contact)
 
