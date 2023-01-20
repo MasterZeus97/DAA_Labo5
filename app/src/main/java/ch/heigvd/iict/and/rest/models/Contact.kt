@@ -14,7 +14,8 @@ data class Contact(@PrimaryKey(autoGenerate = true) var id: Long? = null,
               var zip: String?,
               var city: String?,
               var type: PhoneType?,
-              var phoneNumber: String?) {
+              var phoneNumber: String?,
+              var state: SyncState) {
 
     override fun toString(): String {
         return  "Contact(id: $id, name: $name, firstname: $firstname, " +

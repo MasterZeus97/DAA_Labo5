@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import ch.heigvd.iict.and.rest.ContactsApplication
 import ch.heigvd.iict.and.rest.models.Contact
 import ch.heigvd.iict.and.rest.models.PhoneType
+import ch.heigvd.iict.and.rest.models.SyncState
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -22,7 +23,7 @@ class ContactsViewModel(application: ContactsApplication) : AndroidViewModel(app
                       address: String? = null, zip: String? = null,
                       city: String? = null, type: PhoneType? = null,
                       phoneNumber: String? = null) {
-        val c = _contact.value ?: Contact(null, "", null, null, null, null, null, null, null, null)
+        val c = _contact.value ?: Contact(null, "", null, null, null, null, null, null, null, null, SyncState.NEW)
 
         if (name != null) c.name = name
         if (firstname != null) c.firstname = firstname
