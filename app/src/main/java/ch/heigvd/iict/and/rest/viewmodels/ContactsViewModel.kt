@@ -116,8 +116,6 @@ class ContactsViewModel(application: ContactsApplication) : AndroidViewModel(app
      * Met à jour le contact temporaire de la LiveData dans le système
      */
     fun update() {
-        contact.value!!.id!!
-
         viewModelScope.launch {
             repository.update(contact.value!!)
         }
