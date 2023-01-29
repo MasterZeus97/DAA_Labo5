@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -30,28 +32,47 @@ fun AppContact(application: ContactsApplication, contactsViewModel : ContactsVie
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text(text = stringResource(R.string.app_name)) },
-                actions = {
-                    IconButton(onClick = {
-                        contactsViewModel.enroll()
-                    }) { Icon(painter = painterResource(R.drawable.populate), contentDescription = null) }
-                    IconButton(onClick = {
-                        contactsViewModel.refresh()
-                    }) { Icon(painter = painterResource(R.drawable.synchronize), contentDescription = null) }
-                }
-            )
+            if(selectedContact == null){
+                TopAppBar(
+                    title = { Text(text = stringResource(R.string.app_name)) },
+                    actions = {
+                        IconButton(onClick = {
+                            contactsViewModel.enroll()
+                        }) { Icon(painter = painterResource(R.drawable.populate), contentDescription = null) }
+                        IconButton(onClick = {
+                            contactsViewModel.refresh()
+                        }) { Icon(painter = painterResource(R.drawable.synchronize), contentDescription = null) }
+                    }
+                )
+            }else{
+                TopAppBar(
+                    title = { Text(text = stringResource(R.string.app_name)) },
+                    navigationIcon = {
+                        IconButton(
+                            onClick = {contactsViewModel.discardContact()}
+                        ){
+                            Icon(Icons.Default.ArrowBack, contentDescription = "Back")
+                        }
+                    }
+                )
+            }
+
         },
         floatingActionButtonPosition = FabPosition.End,
         floatingActionButton = {
-            FloatingActionButton(onClick = {
-                editOrCreate = true
-                contactsViewModel.createNewContact()
-                //Créer un nouveau contact ici
-                //b = 1//Toast.makeText(context, "TODO - Création d'un nouveau contact", Toast.LENGTH_SHORT).show()
-            }){
-                Icon(Icons.Default.Add, contentDescription = null)
+            if(selectedContact == null){
+                FloatingActionButton(onClick = {
+                    editOrCreate = true
+                    contactsViewModel.createNewContact()
+                    //Créer un nouveau contact ici
+                    //b = 1//Toast.makeText(context, "TODO - Création d'un nouveau contact", Toast.LENGTH_SHORT).show()
+                }){
+                    Icon(Icons.Default.Add, contentDescription = null)
+                }
+            }else{
+
             }
+
         },
     )
     { padding ->
@@ -60,16 +81,9 @@ fun AppContact(application: ContactsApplication, contactsViewModel : ContactsVie
 
             if(selectedContact == null){
                 ScreenContactList(contacts) { selectedContact ->
-                    //contactsViewModel.get(selectedContact.id!!)
 
                     contactsViewModel.saveContact(selectedContact)
                     editOrCreate = false
-
-                    /*Toast.makeText(
-                        context,
-                        "TODO - Edition de ${selectedContact.firstname} ${selectedContact.name}",
-                        Toast.LENGTH_SHORT
-                    ).show()*/
                 }
             } else {
                 if(editOrCreate) {

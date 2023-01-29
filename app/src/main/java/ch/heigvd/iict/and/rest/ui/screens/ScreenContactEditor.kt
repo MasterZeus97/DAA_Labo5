@@ -33,7 +33,7 @@ fun ScreenContactEditor(contactsViewModel: ContactsViewModel = viewModel(factory
     Text(text = title, fontSize = 24.sp)
     Column( modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally) {
-        EditorContent(info = "Name", value = contact.name, onValueChange = {contactsViewModel.changeContact(name = it)})
+        EditorContent(info = "Name", value = contact.name, onValueChange = {contact.name = it})
 
         EditorContent(info = "Firstname", value = contact.firstname, onValueChange = {contactsViewModel.changeContact(firstname = it)})
 
