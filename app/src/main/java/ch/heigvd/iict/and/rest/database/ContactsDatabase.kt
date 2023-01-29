@@ -9,6 +9,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import ch.heigvd.iict.and.rest.database.converters.CalendarConverter
 import ch.heigvd.iict.and.rest.models.Contact
 import ch.heigvd.iict.and.rest.models.PhoneType
+import ch.heigvd.iict.and.rest.models.SyncState
 import java.util.Calendar
 import java.util.GregorianCalendar
 import kotlin.concurrent.thread
@@ -61,7 +62,10 @@ abstract class ContactsDatabase : RoomDatabase() {
                             email = "w.hilt@heig-vd.ch",
                             address = "Route de Cheseaux 1",
                             zip = "1400", city = "Yverdon-les-Bains",
-                            type = PhoneType.OFFICE, phoneNumber = "024 111 22 33" )
+                            type = PhoneType.OFFICE, phoneNumber = "024 111 22 33",
+                            state = SyncState.NEW,
+                            remote_id = null
+                        )
 
                         val c2 =  Contact(  id = null,
                             name = "Fisher",
@@ -78,7 +82,10 @@ abstract class ContactsDatabase : RoomDatabase() {
                             email = "b.fisher@heig-vd.ch",
                             address = "Avenue des Sports 20",
                             zip = "1400", city = "Yverdon-les-Bains",
-                            type = PhoneType.MOBILE, phoneNumber = "079 111 22 33" )
+                            type = PhoneType.MOBILE, phoneNumber = "079 111 22 33",
+                            state = SyncState.NEW,
+                            remote_id = null
+                        )
 
                         database.contactsDao().insert(c1)
                         database.contactsDao().insert(c2)

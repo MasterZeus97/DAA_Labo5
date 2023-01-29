@@ -6,6 +6,7 @@ import java.util.*
 
 @Entity
 data class Contact(@PrimaryKey(autoGenerate = true) var id: Long? = null,
+              var remote_id: Long?,
               var name: String,
               var firstname: String?,
               var birthday : Calendar?,
@@ -14,11 +15,12 @@ data class Contact(@PrimaryKey(autoGenerate = true) var id: Long? = null,
               var zip: String?,
               var city: String?,
               var type: PhoneType?,
-              var phoneNumber: String?) {
+              var phoneNumber: String?,
+              var state: SyncState) {
 
     override fun toString(): String {
         return  "Contact(id: $id, name: $name, firstname: $firstname, " +
                 "birthday: $birthday, email :$email, address: $address, zip: $zip, city: $city, " +
-                "type: $type, phoneNumber: $phoneNumber)"
+                "type: $type, phoneNumber: $phoneNumber, state: $state)"
     }
 }

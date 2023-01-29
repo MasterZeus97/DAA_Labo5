@@ -4,6 +4,10 @@ import androidx.lifecycle.*
 import ch.heigvd.iict.and.rest.ContactsApplication
 import ch.heigvd.iict.and.rest.models.Contact
 import ch.heigvd.iict.and.rest.models.PhoneType
+<<<<<<< HEAD
+=======
+import ch.heigvd.iict.and.rest.models.SyncState
+>>>>>>> develop
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -58,15 +62,30 @@ class ContactsViewModel(application: ContactsApplication) : AndroidViewModel(app
         _contact.postValue(c)
     }
 
+
+    /**
+     * S'enregistre au près du serveur
+     */
+
     fun enroll() {
         viewModelScope.launch {
-            //TODO
+            repository.enroll()
         }
     }
 
+    /**
+     * Récupère un utilisateur
+     */
+    fun get(id: Long) {
+        _contact.postValue(repository.get(id))
+    }
+
+    /**
+     * Synchronise tous les contacts qui ne sont pas dans un état propre
+     */
     fun refresh() {
         viewModelScope.launch {
-            //TODO
+            repository.refresh()
         }
     }
 
@@ -74,6 +93,46 @@ class ContactsViewModel(application: ContactsApplication) : AndroidViewModel(app
         _contact.postValue(Contact(null, "", null, null, null, null, null, null, null, null))
     }
 
+    /**
+     * Ajoute le contact temporaire de la LiveData dans le système
+     */
+    fun insert() {
+        viewModelScope.launch {
+            repository.insert(_contact.value!!)
+        }
+
+        discardContact()
+    }
+
+    /**
+     * Met à jour le contact temporaire de la LiveData dans le système
+     */
+    fun update() {
+        contact.value!!.id!!
+
+        viewModelScope.launch {
+            repository.update(contact.value!!)
+        }
+
+        discardContact()
+    }
+
+    /**
+     * Supprime le contact temporaire
+     */
+    fun delete() {
+        viewModelScope.launch {
+            repository.delete(contact.value!!.id!!)
+        }
+        discardContact()
+    }
+
+    /**
+     * Détruit le contact temporaire
+     */
+    fun discardContact() {
+        _contact.postValue(null)
+    }
 }
 
 class ContactsViewModelFactory(private val application: ContactsApplication) : ViewModelProvider.Factory {
