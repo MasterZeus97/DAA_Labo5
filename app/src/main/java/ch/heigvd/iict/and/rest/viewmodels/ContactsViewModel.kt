@@ -10,33 +10,40 @@ import java.util.*
 
 class ContactsViewModel(application: ContactsApplication) : AndroidViewModel(application) {
 
-    private val repository = application.repository
+    private val repository by lazy { application.repository }
 
-    val allContacts = repository.allContacts
+    val allContacts by lazy { repository.allContacts }
 
-    private val _contact = MutableLiveData<Contact?>(null)
-    val contact : LiveData<Contact?>
-        get() = _contact
+    private var _contact = MutableLiveData<Contact?>(null)
 
-    fun changeContact(name: String? = null, firstname: String? = null,
-                      birthday : Calendar? = null, email: String? = null,
-                      address: String? = null, zip: String? = null,
-                      city: String? = null, type: PhoneType? = null,
-                      phoneNumber: String? = null) {
-        val c = _contact.value ?: Contact(null, null,"", null, null, null, null, null, null, null, null, SyncState.NEW)
+    val contact : LiveData<Contact?>get() = _contact
 
-        if (name != null) c.name = name
-        if (firstname != null) c.firstname = firstname
-        if (birthday != null) c.birthday = birthday
-        if (email != null) c.email = email
-        if (address != null) c.address = address
-        if (zip != null) c.zip = zip
-        if (city != null) c.city = city
-        if (type != null) c.type = type
-        if (phoneNumber != null) c.phoneNumber = phoneNumber
+    fun changeContact(contact: Contact){
+
+        val c = _contact.value!!.copy()
+
+        if(contact.name != "")
+            c.name = contact.name
+        if(contact.firstname != null)
+            c.firstname = contact.firstname
+        if(contact.birthday != null)
+            c.birthday = contact.birthday
+        if(contact.email != null)
+            c.email = contact.email
+        if(contact.address != null)
+            c.address = contact.address
+        if(contact.zip != null)
+            c.zip = contact.zip
+        if(contact.city != null)
+            c.city = contact.city
+        if(contact.type != null)
+            c.type = contact.type
+        if(contact.phoneNumber != null)
+            c.phoneNumber = contact.phoneNumber
 
         _contact.postValue(c)
     }
+
 
     /**
      * S'enregistre au près du serveur
@@ -51,7 +58,9 @@ class ContactsViewModel(application: ContactsApplication) : AndroidViewModel(app
      * Récupère un utilisateur
      */
     fun get(id: Long) {
-        _contact.postValue(repository.get(id))
+        viewModelScope.launch {
+            _contact.postValue(repository.get(id))
+        }
     }
 
     /**
@@ -61,6 +70,20 @@ class ContactsViewModel(application: ContactsApplication) : AndroidViewModel(app
         viewModelScope.launch {
             repository.refresh()
         }
+    }
+
+    /**
+     * Create a new temporary contact
+     */
+    fun createNewContact(){
+        _contact.postValue(Contact(null, null, "", null, null, null, null, null, null, null, null, SyncState.NEW))
+    }
+
+    /**
+     * Save an existing contact in _contact
+     */
+    fun saveContact(contact: Contact){
+        _contact.postValue(contact)
     }
 
     /**
@@ -78,8 +101,6 @@ class ContactsViewModel(application: ContactsApplication) : AndroidViewModel(app
      * Met à jour le contact temporaire de la LiveData dans le système
      */
     fun update() {
-        contact.value!!.id!!
-
         viewModelScope.launch {
             repository.update(contact.value!!)
         }
