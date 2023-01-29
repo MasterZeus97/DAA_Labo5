@@ -58,11 +58,13 @@ fun ScreenContactEditor(contactsViewModel: ContactsViewModel = viewModel(factory
             Button(onClick = { back() }) {
                 Text(text = "Cancel")
             }
+            if(validateText == "SAVE"){
+                Button(onClick = { delete() }) {
+                    Text(text = "DELETE")
+                }
+            }
             Button(onClick = { validate() }) {
                 Text(text = validateText)
-            }
-            Button(onClick = { delete() }) {
-                Text(text = "DELETE")
             }
         }
 

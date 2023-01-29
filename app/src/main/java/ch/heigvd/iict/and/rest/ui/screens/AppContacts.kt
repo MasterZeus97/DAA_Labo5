@@ -62,18 +62,19 @@ fun AppContact(application: ContactsApplication, contactsViewModel : ContactsVie
 
             if(selectedContact == null){
                 ScreenContactList(contacts) { selectedContact ->
-                    Toast.makeText(
+                    contactsViewModel.get(selectedContact.id!!)
+                /*Toast.makeText(
                         context,
                         "TODO - Edition de ${selectedContact.firstname} ${selectedContact.name}",
                         Toast.LENGTH_SHORT
-                    ).show()
+                    ).show()*/
                 }
             } else {
                 if(b) {
                     //Passer en callback les méthodes nécessaire. Pour create/delete/Save -> Même combat, changer l'état. pour la création/modification, checkl'existence.
-                    ScreenContactEditor(title = "New contact", contact = selectedContact!!, delete = {contactsViewModel.delete()}, back = {contactsViewModel.discardContact()}, validate = {}, validateText = "CREATE")
+                    ScreenContactEditor(title = "New contact", contact = selectedContact!!, delete = {}, back = {contactsViewModel.discardContact()}, validate = {contactsViewModel.insert()}, validateText = "CREATE")
                 }else{
-                    ScreenContactEditor(title = "Edit contact", contact = selectedContact!!,  delete = {}, back = {}, validate = {}, validateText = "SAVE")
+                    ScreenContactEditor(title = "Edit contact", contact = selectedContact!!,  delete = {contactsViewModel.delete()}, back = {}, validate = {}, validateText = "SAVE")
                 }
             }
         }

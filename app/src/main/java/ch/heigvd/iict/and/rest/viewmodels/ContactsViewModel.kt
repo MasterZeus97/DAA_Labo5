@@ -4,10 +4,7 @@ import androidx.lifecycle.*
 import ch.heigvd.iict.and.rest.ContactsApplication
 import ch.heigvd.iict.and.rest.models.Contact
 import ch.heigvd.iict.and.rest.models.PhoneType
-<<<<<<< HEAD
-=======
 import ch.heigvd.iict.and.rest.models.SyncState
->>>>>>> develop
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -90,7 +87,7 @@ class ContactsViewModel(application: ContactsApplication) : AndroidViewModel(app
     }
 
     fun createNewContact(){
-        _contact.postValue(Contact(null, "", null, null, null, null, null, null, null, null))
+        _contact.postValue(Contact(null, null, "", null, null, null, null, null, null, null, null, SyncState.NEW))
     }
 
     /**
