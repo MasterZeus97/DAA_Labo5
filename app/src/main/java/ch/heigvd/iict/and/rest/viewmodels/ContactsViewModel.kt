@@ -3,10 +3,14 @@ package ch.heigvd.iict.and.rest.viewmodels
 import androidx.lifecycle.*
 import ch.heigvd.iict.and.rest.ContactsApplication
 import ch.heigvd.iict.and.rest.models.Contact
-import ch.heigvd.iict.and.rest.models.PhoneType
 import ch.heigvd.iict.and.rest.models.SyncState
 import kotlinx.coroutines.launch
-import java.util.*
+
+/**
+ * @author Perrenoud Pascal
+ * @author Seem Thibault
+ * @description ContactsViewModel ViewModel pour gérer les contacts
+ */
 
 class ContactsViewModel(application: ContactsApplication) : AndroidViewModel(application) {
 
