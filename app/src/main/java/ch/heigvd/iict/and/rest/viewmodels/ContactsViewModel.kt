@@ -128,6 +128,15 @@ class ContactsViewModel(application: ContactsApplication) : AndroidViewModel(app
     }
 
     /**
+     * Supprime un contact selon son ID
+     */
+    fun delete(id: Long) {
+        viewModelScope.launch {
+            repository.delete(id)
+        }
+    }
+
+    /**
      * Détruit le contact temporaire
      */
     fun discardContact() {
