@@ -4,6 +4,7 @@ import androidx.lifecycle.*
 import ch.heigvd.iict.and.rest.ContactsApplication
 import ch.heigvd.iict.and.rest.models.Contact
 import ch.heigvd.iict.and.rest.models.PhoneType
+import ch.heigvd.iict.and.rest.models.SyncState
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -22,7 +23,7 @@ class ContactsViewModel(application: ContactsApplication) : AndroidViewModel(app
                       address: String? = null, zip: String? = null,
                       city: String? = null, type: PhoneType? = null,
                       phoneNumber: String? = null) {
-        val c = _contact.value ?: Contact(null, "", null, null, null, null, null, null, null, null)
+        val c = _contact.value ?: Contact(null, null,"", null, null, null, null, null, null, null, null, SyncState.NEW)
 
         if (name != null) c.name = name
         if (firstname != null) c.firstname = firstname
@@ -42,7 +43,7 @@ class ContactsViewModel(application: ContactsApplication) : AndroidViewModel(app
      */
     fun enroll() {
         viewModelScope.launch {
-            //TODO
+            repository.enroll()
         }
     }
 
@@ -50,7 +51,7 @@ class ContactsViewModel(application: ContactsApplication) : AndroidViewModel(app
      * Récupère un utilisateur
      */
     fun get(id: Long) {
-        // TODO : _contact.postValue(contacts.get(id))
+        _contact.postValue(repository.get(id))
     }
 
     /**
@@ -58,7 +59,7 @@ class ContactsViewModel(application: ContactsApplication) : AndroidViewModel(app
      */
     fun refresh() {
         viewModelScope.launch {
-            //TODO
+            repository.refresh()
         }
     }
 
@@ -66,24 +67,34 @@ class ContactsViewModel(application: ContactsApplication) : AndroidViewModel(app
      * Ajoute le contact temporaire de la LiveData dans le système
      */
     fun insert() {
-        // TODO
-        _contact.postValue(null)
+        viewModelScope.launch {
+            repository.insert(_contact.value!!)
+        }
+
+        discardContact()
     }
 
     /**
      * Met à jour le contact temporaire de la LiveData dans le système
      */
     fun update() {
-        // TODO
-        _contact.postValue(null)
+        contact.value!!.id!!
+
+        viewModelScope.launch {
+            repository.update(contact.value!!)
+        }
+
+        discardContact()
     }
 
     /**
      * Supprime le contact temporaire
      */
     fun delete() {
-        // TODO
-        _contact.postValue(null)
+        viewModelScope.launch {
+            repository.delete(contact.value!!.id!!)
+        }
+        discardContact()
     }
 
     /**
