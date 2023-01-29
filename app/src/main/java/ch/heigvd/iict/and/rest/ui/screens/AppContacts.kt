@@ -26,9 +26,7 @@ fun AppContact(application: ContactsApplication, contactsViewModel : ContactsVie
     val context = LocalContext.current
     val contacts : List<Contact> by contactsViewModel.allContacts.observeAsState(initial = emptyList())
     val selectedContact : Contact? by contactsViewModel.contact.observeAsState(null)
-    //val contact : Contact by contactsViewModel.contact.observeAsState(Contact(null, "", null, null, null, null, null, null, null, null))
-    //var b by remember { mutableStateOf(0) }
-    var b : Boolean = false
+    var editOrCreate : Boolean = false
 
     Scaffold(
         topBar = {
@@ -47,7 +45,7 @@ fun AppContact(application: ContactsApplication, contactsViewModel : ContactsVie
         floatingActionButtonPosition = FabPosition.End,
         floatingActionButton = {
             FloatingActionButton(onClick = {
-                b = true
+                editOrCreate = true
                 contactsViewModel.createNewContact()
                 //Créer un nouveau contact ici
                 //b = 1//Toast.makeText(context, "TODO - Création d'un nouveau contact", Toast.LENGTH_SHORT).show()
@@ -62,27 +60,27 @@ fun AppContact(application: ContactsApplication, contactsViewModel : ContactsVie
 
             if(selectedContact == null){
                 ScreenContactList(contacts) { selectedContact ->
-                    contactsViewModel.get(selectedContact.id!!)
-                /*Toast.makeText(
+                    //contactsViewModel.get(selectedContact.id!!)
+
+                    contactsViewModel.saveContact(selectedContact)
+                    editOrCreate = false
+
+                    /*Toast.makeText(
                         context,
                         "TODO - Edition de ${selectedContact.firstname} ${selectedContact.name}",
                         Toast.LENGTH_SHORT
                     ).show()*/
                 }
             } else {
-                if(b) {
+                if(editOrCreate) {
                     //Passer en callback les méthodes nécessaire. Pour create/delete/Save -> Même combat, changer l'état. pour la création/modification, checkl'existence.
                     ScreenContactEditor(title = "New contact", contact = selectedContact!!, delete = {}, back = {contactsViewModel.discardContact()}, validate = {contactsViewModel.insert()}, validateText = "CREATE")
+                    editOrCreate = false
                 }else{
-                    ScreenContactEditor(title = "Edit contact", contact = selectedContact!!,  delete = {contactsViewModel.delete()}, back = {}, validate = {}, validateText = "SAVE")
+                    ScreenContactEditor(title = "Edit contact", contact = selectedContact!!,  delete = {contactsViewModel.delete()}, back = {contactsViewModel.discardContact()}, validate = {contactsViewModel.update()}, validateText = "SAVE")
                 }
             }
         }
     }
 
 }
-/*
-@Composable
-fun Content() {
-
-}*/

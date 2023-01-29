@@ -8,6 +8,8 @@ import ch.heigvd.iict.and.rest.database.ContactsDao
 import ch.heigvd.iict.and.rest.models.Contact
 import ch.heigvd.iict.and.rest.models.SyncState
 import com.google.gson.Gson
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.net.HttpURLConnection
 import java.net.URL
 import kotlin.coroutines.resume
@@ -18,7 +20,7 @@ class ContactsRepository(private val dao: ContactsDao, private val prefs: Shared
     val allContacts = dao.getAllContactsLiveData()
 
     private var uuid: String? = null
-    private val url: String = "https://daa.icct.ch/"
+    private val url: String = "https://daa.icct.ch"
 
     private fun hasInternet(): Boolean {
         val networkCapabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
@@ -112,33 +114,33 @@ class ContactsRepository(private val dao: ContactsDao, private val prefs: Shared
         }
     }
 
-    suspend fun enroll() {
+    suspend fun enroll(){
         if (getUuid()) {
             dao.clearAllContacts()
         }
     }
 
-    suspend fun insert(contact: Contact) {
+    suspend fun insert(contact: Contact) = withContext(Dispatchers.IO){
         contact.state = SyncState.NEW
         contact.id = dao.insert(contact)
-        sync(contact)
+        //sync(contact)
     }
 
-    suspend fun update(contact: Contact) {
+    suspend fun update(contact: Contact) = withContext(Dispatchers.IO){
         contact.state = SyncState.UPDATED
         dao.update(contact)
         sync(contact)
     }
 
-    suspend fun refresh() {
+    suspend fun refresh() = withContext(Dispatchers.IO){
         for (contact in dao.getAllContactsLiveData(SyncState.OK).value!!) {
             sync(contact)
         }
     }
 
-    suspend fun delete(id: Long) {
+    suspend fun delete(id: Long) = withContext(Dispatchers.IO){
         dao.changeState(id, SyncState.DELETED)
-        sync(dao.getContactById(id)!!)
+        //sync(dao.getContactById(id)!!)
     }
 
     fun get(id: Long): Contact? {

@@ -86,8 +86,18 @@ class ContactsViewModel(application: ContactsApplication) : AndroidViewModel(app
         }
     }
 
+    /**
+     * Create a new temporary contact
+     */
     fun createNewContact(){
         _contact.postValue(Contact(null, null, "", null, null, null, null, null, null, null, null, SyncState.NEW))
+    }
+
+    /**
+     * Save an existing contact in _contact
+     */
+    fun saveContact(contact: Contact){
+        _contact.postValue(contact)
     }
 
     /**
