@@ -14,7 +14,7 @@ class ContactsViewModel(application: ContactsApplication) : AndroidViewModel(app
 
     val allContacts by lazy { repository.allContacts }
 
-    var _contact = MutableLiveData<Contact?>(null)
+    private var _contact = MutableLiveData<Contact?>(null)
 
     val contact : LiveData<Contact?>get() = _contact
 
@@ -28,7 +28,7 @@ class ContactsViewModel(application: ContactsApplication) : AndroidViewModel(app
                       type: String? = null,
                       phoneNumber: String? = null){
 
-        var c = _contact.value!!.copy()
+        val c = _contact.value!!.copy()
 
         if(name != null)
             c.name = name
@@ -63,7 +63,6 @@ class ContactsViewModel(application: ContactsApplication) : AndroidViewModel(app
     /**
      * S'enregistre au près du serveur
      */
-
     fun enroll() {
         viewModelScope.launch {
             repository.enroll()
@@ -74,7 +73,9 @@ class ContactsViewModel(application: ContactsApplication) : AndroidViewModel(app
      * Récupère un utilisateur
      */
     fun get(id: Long) {
-        _contact.postValue(repository.get(id))
+        viewModelScope.launch {
+            _contact.postValue(repository.get(id))
+        }
     }
 
     /**
