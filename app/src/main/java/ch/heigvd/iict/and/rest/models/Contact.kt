@@ -4,6 +4,12 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.*
 
+/**
+ * @author Perrenoud Pascal
+ * @author Seem Thibault
+ * @description Contact Entité d'un contact
+ */
+
 @Entity
 data class Contact(@PrimaryKey(autoGenerate = true) var id: Long? = null,
               var remote_id: Long?,

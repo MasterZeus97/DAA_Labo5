@@ -1,14 +1,12 @@
 package ch.heigvd.iict.and.rest.ui.screens
 
 import android.os.Build
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
@@ -22,6 +20,12 @@ import ch.heigvd.iict.and.rest.models.Contact
 import ch.heigvd.iict.and.rest.viewmodels.ContactsViewModel
 import ch.heigvd.iict.and.rest.viewmodels.ContactsViewModelFactory
 
+/**
+ * @author Perrenoud Pascal
+ * @author Seem Thibault
+ * @description AppContact Squelette de notre application. C'est ici que sont géré les différentes vues
+ */
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppContact(application: ContactsApplication, contactsViewModel : ContactsViewModel = viewModel(factory= ContactsViewModelFactory(application))) {
@@ -30,9 +34,11 @@ fun AppContact(application: ContactsApplication, contactsViewModel : ContactsVie
     val selectedContact : Contact? by contactsViewModel.contact.observeAsState(null)
     var editOrCreate : Boolean = false
 
+    var editOrNotEdit by remember{ mutableStateOf(true) }
+
     Scaffold(
         topBar = {
-            if(selectedContact == null){
+            if(editOrNotEdit){
                 TopAppBar(
                     title = { Text(text = stringResource(R.string.app_name)) },
                     actions = {
@@ -60,12 +66,10 @@ fun AppContact(application: ContactsApplication, contactsViewModel : ContactsVie
         },
         floatingActionButtonPosition = FabPosition.End,
         floatingActionButton = {
-            if(selectedContact == null){
+            if(editOrNotEdit){
                 FloatingActionButton(onClick = {
                     editOrCreate = true
                     contactsViewModel.createNewContact()
-                    //Créer un nouveau contact ici
-                    //b = 1//Toast.makeText(context, "TODO - Création d'un nouveau contact", Toast.LENGTH_SHORT).show()
                 }){
                     Icon(Icons.Default.Add, contentDescription = null)
                 }
@@ -80,14 +84,15 @@ fun AppContact(application: ContactsApplication, contactsViewModel : ContactsVie
 
 
             if(selectedContact == null){
+                editOrNotEdit = true
                 ScreenContactList(contacts) { selectedContact ->
 
                     contactsViewModel.saveContact(selectedContact)
                     editOrCreate = false
                 }
             } else {
+                editOrNotEdit = false
                 if(editOrCreate) {
-                    //Passer en callback les méthodes nécessaire. Pour create/delete/Save -> Même combat, changer l'état. pour la création/modification, checkl'existence.
                     ScreenContactEditor(title = "New contact", contact = selectedContact!!, delete = {}, back = {contactsViewModel.discardContact()}, validate = {contactsViewModel.insert()}, validateText = "CREATE", changeContact = {contactsViewModel.changeContact(it)})
                     editOrCreate = false
                 }else{

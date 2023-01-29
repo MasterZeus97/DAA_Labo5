@@ -12,15 +12,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import ch.heigvd.iict.and.rest.ContactsApplication
 import ch.heigvd.iict.and.rest.models.Contact
 import ch.heigvd.iict.and.rest.models.PhoneType
 import ch.heigvd.iict.and.rest.models.SyncState
-import ch.heigvd.iict.and.rest.viewmodels.ContactsViewModel
-import ch.heigvd.iict.and.rest.viewmodels.ContactsViewModelFactory
 import java.time.LocalDate
 import java.util.*
+
+/**
+ * @author Perrenoud Pascal
+ * @author Seem Thibault
+ * @description ScreenContactEditor View permettant l'édition d'un contact (que ce soit un nouveau ou un existant)
+ */
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable

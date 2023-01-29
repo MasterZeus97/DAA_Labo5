@@ -14,6 +14,12 @@ import kotlinx.coroutines.withContext
 import java.net.HttpURLConnection
 import java.net.URL
 
+/**
+ * @author Perrenoud Pascal
+ * @author Seem Thibault
+ * @description ContactsRepository Repository pour gérer la communication avec l'API et la DB
+ */
+
 class ContactsRepository(private val dao: ContactsDao, private val prefs: SharedPreferences, private val connectivityManager: ConnectivityManager) {
     val allContacts = dao.getAllContactsLiveData()
 

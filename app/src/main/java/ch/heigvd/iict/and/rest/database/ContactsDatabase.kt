@@ -5,14 +5,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import androidx.sqlite.db.SupportSQLiteDatabase
 import ch.heigvd.iict.and.rest.database.converters.CalendarConverter
 import ch.heigvd.iict.and.rest.models.Contact
-import ch.heigvd.iict.and.rest.models.PhoneType
-import ch.heigvd.iict.and.rest.models.SyncState
-import java.util.Calendar
-import java.util.GregorianCalendar
-import kotlin.concurrent.thread
 
 @Database(entities = [Contact::class], version = 1, exportSchema = true)
 @TypeConverters(CalendarConverter::class)
@@ -31,7 +25,6 @@ abstract class ContactsDatabase : RoomDatabase() {
                 val _instance = Room.databaseBuilder(context.applicationContext,
                 ContactsDatabase::class.java, "contacts.db")
                     .fallbackToDestructiveMigration()
-                    //.addCallback(MyDatabaseCallback()) // FIXME - can be removed
                     .build()
 
                 INSTANCE = _instance
