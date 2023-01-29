@@ -10,9 +10,9 @@ import java.util.*
 
 class ContactsViewModel(application: ContactsApplication) : AndroidViewModel(application) {
 
-    private val repository = application.repository
+    private val repository by lazy { application.repository }
 
-    val allContacts = repository.allContacts
+    val allContacts by lazy { repository.allContacts }
 
     private val _contact = MutableLiveData<Contact?>(null)
     val contact : LiveData<Contact?>
