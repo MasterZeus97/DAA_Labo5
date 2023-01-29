@@ -88,10 +88,10 @@ fun AppContact(application: ContactsApplication, contactsViewModel : ContactsVie
             } else {
                 if(editOrCreate) {
                     //Passer en callback les méthodes nécessaire. Pour create/delete/Save -> Même combat, changer l'état. pour la création/modification, checkl'existence.
-                    ScreenContactEditor(title = "New contact", contact = selectedContact!!, delete = {}, back = {contactsViewModel.discardContact()}, validate = {contactsViewModel.insert()}, validateText = "CREATE")
+                    ScreenContactEditor(title = "New contact", contact = selectedContact!!, delete = {}, back = {contactsViewModel.discardContact()}, validate = {contactsViewModel.insert()}, validateText = "CREATE", changeContact = {contactsViewModel.changeContact(it)})
                     editOrCreate = false
                 }else{
-                    ScreenContactEditor(title = "Edit contact", contact = selectedContact!!,  delete = {contactsViewModel.delete()}, back = {contactsViewModel.discardContact()}, validate = {contactsViewModel.update()}, validateText = "SAVE")
+                    ScreenContactEditor(title = "Edit contact", contact = selectedContact!!,  delete = {contactsViewModel.delete()}, back = {contactsViewModel.discardContact()}, validate = {contactsViewModel.update()}, validateText = "SAVE", changeContact = {contactsViewModel.changeContact(it)})
                 }
             }
         }

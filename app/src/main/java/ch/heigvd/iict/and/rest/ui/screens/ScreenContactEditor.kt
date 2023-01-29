@@ -15,6 +15,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import ch.heigvd.iict.and.rest.ContactsApplication
 import ch.heigvd.iict.and.rest.models.Contact
+import ch.heigvd.iict.and.rest.models.PhoneType
+import ch.heigvd.iict.and.rest.models.SyncState
 import ch.heigvd.iict.and.rest.viewmodels.ContactsViewModel
 import ch.heigvd.iict.and.rest.viewmodels.ContactsViewModelFactory
 import java.time.LocalDate
@@ -22,37 +24,62 @@ import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ScreenContactEditor(contactsViewModel: ContactsViewModel = viewModel(factory = ContactsViewModelFactory(ContactsApplication())),
-                        title: String,
+fun ScreenContactEditor(title: String,
                         contact: Contact,
                         validateText: String,
                         validate:() -> Unit,
                         back:() -> Unit,
-                        delete:() -> Unit
+                        delete:() -> Unit,
+                        changeContact:(Contact) -> Unit
 ){
+    val contactTmp = Contact(null, null, "", null, null, null, null, null, null, null, null, SyncState.NEW)
     Text(text = title, fontSize = 24.sp)
     Column( modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally) {
-        EditorContent(info = "Name", value = contact.name, onValueChange = {contact.name = it})
+        EditorContent(info = "Name", value = contact.name, onValueChange = {contactTmp.name = it
+                                                                            changeContact(contactTmp)
+                                                                            contactTmp.name = ""})
 
-        EditorContent(info = "Firstname", value = contact.firstname, onValueChange = {contactsViewModel.changeContact(firstname = it)})
+        EditorContent(info = "Firstname", value = contact.firstname, onValueChange = {contactTmp.firstname = it
+                                                                                        changeContact(contactTmp)
+                                                                                        contactTmp.firstname = null})
 
-        EditorContent(info = "E-Mail", value = contact.email, onValueChange = {contactsViewModel.changeContact(email = it)})
+        EditorContent(info = "E-Mail", value = contact.email, onValueChange = {contactTmp.email = it
+                                                                                changeContact(contactTmp)
+                                                                                contactTmp.email = null})
 
-        EditorContent(info = "Birthday", value = "", onValueChange = {  val tmp = LocalDate.of(1900, 1, 1).plusDays(44561);
-                                                                        val cal = Calendar.getInstance();
-                                                                        cal.set(tmp.getYear(), tmp.getMonthValue()-1, tmp.getDayOfMonth());
-                                                                        contactsViewModel.changeContact(birthday = cal)}) //Ne pas implémenter.
+        EditorContent(info = "Birthday", value = "", onValueChange = {  val tmp = LocalDate.of(1900, 1, 1).plusDays(44561)
+                                                                        val cal = Calendar.getInstance()
+                                                                        cal.set(tmp.getYear(), tmp.getMonthValue()-1, tmp.getDayOfMonth())
+                                                                        contactTmp.birthday = cal
+                                                                        changeContact(contactTmp)
+                                                                        contactTmp.birthday = null}) //Ne pas implémenter.
 
-        EditorContent(info = "Address", value = contact.address, onValueChange = {contactsViewModel.changeContact(address = it)})
+        EditorContent(info = "Address", value = contact.address, onValueChange = {contactTmp.address = it
+                                                                                    changeContact(contactTmp)
+                                                                                    contactTmp.address = null})
 
-        EditorContent(info = "Zip", value = contact.zip, onValueChange = {contactsViewModel.changeContact(zip = it)})
+        EditorContent(info = "Zip", value = contact.zip, onValueChange = {contactTmp.zip = it
+                                                                            changeContact(contactTmp)
+                                                                            contactTmp.zip = null})
 
-        EditorContent(info = "City", value = contact.city, onValueChange = {contactsViewModel.changeContact(city = it)})
+        EditorContent(info = "City", value = contact.city, onValueChange = {contactTmp.city = it
+                                                                            changeContact(contactTmp)
+                                                                            contactTmp.city = null})
 
-        MyUI(onValueChange = {contactsViewModel.changeContact(type = it)})
+        MyRadioButton(onValueChange = {contactTmp.type = when(it){
+                                                            "Home" -> PhoneType.HOME
+                                                            "Mobile" -> PhoneType.MOBILE
+                                                            "Office" -> PhoneType.OFFICE
+                                                            "Fax" -> PhoneType.FAX
+                                                            else -> null
+                                                        }
+                                        changeContact(contact)
+                                        contactTmp.type = null})
 
-        EditorContent(info = "Phone Number", value = contact.phoneNumber, onValueChange = {contactsViewModel.changeContact(phoneNumber = it)})
+        EditorContent(info = "Phone Number", value = contact.phoneNumber, onValueChange = {contactTmp.phoneNumber = it
+                                                                                            changeContact(contactTmp)
+                                                                                            contactTmp.firstname = null})
 
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
             Button(onClick = { back() }) {
@@ -87,7 +114,7 @@ fun EditorContent(info: String, value: String?, onValueChange:(String) -> Unit){
 }
 
 @Composable
-fun MyUI(onValueChange:(String) -> Unit) {
+fun MyRadioButton(onValueChange:(String) -> Unit) {
     val radioOptions = listOf("Home", "Mobile", "Office", "Fax")
 
     var selectedItem by remember {

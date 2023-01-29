@@ -18,43 +18,28 @@ class ContactsViewModel(application: ContactsApplication) : AndroidViewModel(app
 
     val contact : LiveData<Contact?>get() = _contact
 
-    fun changeContact(name: String? = null,
-                      firstname: String? = null,
-                      birthday : Calendar? = null,
-                      email: String? = null,
-                      address: String? = null,
-                      zip: String? = null,
-                      city: String? = null,
-                      type: String? = null,
-                      phoneNumber: String? = null){
+    fun changeContact(contact: Contact){
 
         val c = _contact.value!!.copy()
 
-        if(name != null)
-            c.name = name
-        if(firstname != null)
-            c.firstname = firstname
-        if(birthday != null)
-            c.birthday = birthday
-        if(email != null)
-            c.email = email
-        if(address != null)
-            c.address = address
-        if(zip != null)
-            c.zip = zip
-        if(city != null)
-            c.city = city
-        if(type != null){
-            when(type){
-                "Home" -> c.type = PhoneType.HOME
-                "Mobile" -> c.type = PhoneType.MOBILE
-                "Office" -> c.type = PhoneType.OFFICE
-                "Fax" -> c.type = PhoneType.FAX
-                else -> c.type = null
-            }
-        }
-        if(phoneNumber != null)
-            c.phoneNumber = phoneNumber
+        if(contact.name != "")
+            c.name = contact.name
+        if(contact.firstname != null)
+            c.firstname = contact.firstname
+        if(contact.birthday != null)
+            c.birthday = contact.birthday
+        if(contact.email != null)
+            c.email = contact.email
+        if(contact.address != null)
+            c.address = contact.address
+        if(contact.zip != null)
+            c.zip = contact.zip
+        if(contact.city != null)
+            c.city = contact.city
+        if(contact.type != null)
+            c.type = contact.type
+        if(contact.phoneNumber != null)
+            c.phoneNumber = contact.phoneNumber
 
         _contact.postValue(c)
     }
